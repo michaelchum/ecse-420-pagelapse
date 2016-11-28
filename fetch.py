@@ -8,9 +8,11 @@ import errno
 import shutil
 from multiprocessing import Process
 import os
+import glob
 import time
 import subprocess
 import signal
+import giffer
 
 ON_POSIX = 'posix' in sys.builtin_module_names
 
@@ -105,6 +107,10 @@ def fetch(repo_url):
 
     for t in phantom_process_list:
         t.join()
+
+    image_files = glob.glob(screen_path + '/*')
+
+    giffer(files=image_files, xsize=500, ysize=500, framelen=1, outfile=repo_name + '.gif') 
 
     to_print = "gif"
     to_print += " " + repo_name + ".mp4"
