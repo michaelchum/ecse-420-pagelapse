@@ -9,11 +9,10 @@ def giffer(files, xsize, ysize, framelen, dither, loops, outfile):
 			del args[i]
 	
 	images = [Image.open(fname) for fname in files]
-
 	for im in images:
 		im.thumbnail((xsize, ysize), Image.ANTIALIAS)
 
-	writeGif(filename=outfile, images=images, duration=framelen, dither=dither, loops=loops)
+	writeGif(filename=outfile, images=images, duration=framelen, dither=dither, loops=loops, width=xsize, height=ysize)
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()

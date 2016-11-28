@@ -40,11 +40,11 @@ def intToBin(i):
     return chr(i1) + chr(i2)
 
 
-def getheaderAnim(im):
+def getheaderAnim(im, width, height):
     """ Animation header. To replace the getheader()[0] """
     bb = "GIF89a"
-    bb += intToBin(im.size[0])
-    bb += intToBin(im.size[1])
+    bb += intToBin(width)
+    bb += intToBin(height)
     bb += "\x87\x00\x00"
     return bb
 
@@ -74,7 +74,7 @@ def getGraphicsControlExt(duration=0.1):
     return bb
 
 
-def _writeGifToFile(fp, images, durations, loops):
+def _writeGifToFile(fp, images, durations, loops, width, height):
     """ Given a set of images writes the bytes to the specified stream.
     """
     
@@ -91,7 +91,7 @@ def _writeGifToFile(fp, images, durations, loops):
             palette = getheader(im)[0][-1]
             data = getdata(im)
             imdes, data = data[0], data[1:]            
-            header = getheaderAnim(im)
+            header = getheaderAnim(im, width, height)
             appext = getAppExt(loops)
             graphext = getGraphicsControlExt(durations[0])
             
@@ -147,7 +147,7 @@ def _writeGifToFile(fp, images, durations, loops):
     return frames
 
 
-def writeGif(filename, images, duration=0.1, loops=0, dither=1):
+def writeGif(filename, images, duration=0.1, loops=0, dither=1, width=100, height=100):
     """ writeGif(filename, images, duration=0.1, loops=0, dither=1)
     Write an animated gif from the specified images. 
     images should be a list of numpy arrays of PIL images.
@@ -200,7 +200,7 @@ def writeGif(filename, images, duration=0.1, loops=0, dither=1):
     
     # write
     try:
-        n = _writeGifToFile(fp, images2, durations, loops)
+        n = _writeGifToFile(fp, images2, durations, loops, width, height)
         print n, 'frames written'
     finally:
         fp.close()
@@ -213,5 +213,5 @@ if __name__ == '__main__':
     im[-50:-40,:] = 50
     
     images = [im*1.0, im*0.8, im*0.6, im*0.4, im*0]
-    writeGif('lala3.gif',images, duration=0.5, dither=0)
+    writeGif('lala3.gif',images, duration=0.5, dither=0, width=10, height=10)
     

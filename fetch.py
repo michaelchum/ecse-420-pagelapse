@@ -108,9 +108,18 @@ def fetch(repo_url):
     for t in phantom_process_list:
         t.join()
 
-    image_files = glob.glob(screen_path + '/*')
+    image_files = glob.glob(screen_path + '/*.jpg')
+    xmax = 0
+    ymax = 0
+    for fpath in image_files:
+        im = Image.open(fpath)
+        width, height = im.size
+        xmax = max(xmax, width)
+        ymax = max(ymax, height)
 
-    giffer(files=image_files, xsize=500, ysize=500, framelen=1, outfile=repo_name + '.gif') 
+    xmax = xmax/4
+    ymax = ymax/4
+    giffer.giffer(files=sorted(image_files), xsize=xmax, ysize=ymax, framelen=1, outfile=screen_path + '/' + repo_name + '.gif', dither=True, loops=0)
 
     to_print = "gif"
     to_print += " " + repo_name + ".mp4"
