@@ -24,8 +24,6 @@ def giffer(files, xsize, ysize, framelen, dither, loops, outfile):
 	for t in q:
 		t.join()
 
-		
-
 	writeGif(filename=outfile, images=images, duration=framelen, dither=dither, loops=loops, width=xsize, height=ysize)
 
 if __name__ == '__main__':

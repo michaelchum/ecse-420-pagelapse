@@ -21,7 +21,8 @@ repo_dir = 'repos/'
 tmp_dir = repo_dir + 'tmp/'
 host_dir = repo_dir + 'tmp_host/'
 screen_dir = 'screenshots/'
-commit_per_thread = 20
+
+num_processes = 1
 
 def enqueue_output(out, queue):
     for line in iter(out.readline, b''):
@@ -76,6 +77,12 @@ def fetch(repo_url):
         commit_list.append(commit)
     commit_list.reverse()
 
+    commit_per_thread = len(commit_list) / num_processes
+    if (len(commit_list) % num_processes) > 0:
+        commit_per_thread += 1
+
+    print "Commit per thread: " + str(commit_per_thread)
+
     # print len(commit_list)
 
     # filter changed files
@@ -90,13 +97,12 @@ def fetch(repo_url):
                 break
 
     chunked_commit_list = list(chunks(commit_list, commit_per_thread))
-    numThreads = len(chunked_commit_list)
 
     # list servers
     phantom_process_list = []
 
     # spawn server threads
-    for x in range(numThreads):
+    for x in range(num_processes):
         port = 4000 + x
         sub_chunk = chunked_commit_list[x]
         start_index = x * commit_per_thread
