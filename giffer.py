@@ -2,6 +2,10 @@ from images2gif import writeGif
 from PIL import Image
 import os, sys
 import argparse
+from threading  import Thread
+
+def thread_fct(xsize, ysize, im):
+	im.thumbnail((xsize, ysize), Image.ANTIALIAS)
 
 def giffer(files, xsize, ysize, framelen, dither, loops, outfile):
 	for i, fname in enumerate(files):
@@ -9,8 +13,18 @@ def giffer(files, xsize, ysize, framelen, dither, loops, outfile):
 			del args[i]
 	
 	images = [Image.open(fname) for fname in files]
+	q = []
+   
 	for im in images:
-		im.thumbnail((xsize, ysize), Image.ANTIALIAS)
+		t = Thread(target=thread_fct, args=(xsize, ysize, im))
+		t.daemon = True # thread dies with the program
+		t.start()
+		q.append(t)
+
+	for t in q:
+		t.join()
+
+		
 
 	writeGif(filename=outfile, images=images, duration=framelen, dither=dither, loops=loops, width=xsize, height=ysize)
 

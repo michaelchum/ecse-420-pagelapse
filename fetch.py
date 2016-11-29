@@ -13,6 +13,7 @@ import time
 import subprocess
 import signal
 import giffer
+from PIL import Image
 
 ON_POSIX = 'posix' in sys.builtin_module_names
 
@@ -117,13 +118,12 @@ def fetch(repo_url):
         xmax = max(xmax, width)
         ymax = max(ymax, height)
 
-    xmax = xmax/4
-    ymax = ymax/4
-    giffer.giffer(files=sorted(image_files), xsize=xmax, ysize=ymax, framelen=1, outfile=screen_path + '/' + repo_name + '.gif', dither=True, loops=0)
+    xmax = xmax/2
+    ymax = ymax/2
+    giffer.giffer(files=sorted(image_files), xsize=xmax, ysize=ymax, framelen=0.3, outfile=screen_path + '/' + repo_name + '.gif', dither=True, loops=0)
 
-    to_print = "gif"
-    to_print += " " + repo_name + ".mp4"
-    print to_print
+    print repo_name + '.gif'
+
 
 def spawn_server_thread(port, repo_path, host_path, repo_name):
 
