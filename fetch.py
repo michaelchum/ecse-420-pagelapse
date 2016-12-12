@@ -17,12 +17,15 @@ from PIL import Image
 
 ON_POSIX = 'posix' in sys.builtin_module_names
 
+# Defaults
+num_processes = 2
+repo_uri = 'https://github.com/markprokoudine/mchacks'
+
+# Temporary folders
 repo_dir = 'repos/'
 tmp_dir = repo_dir + 'tmp/'
 host_dir = repo_dir + 'tmp_host/'
 screen_dir = 'screenshots/'
-
-num_processes = 1
 
 def enqueue_output(out, queue):
     for line in iter(out.readline, b''):
@@ -186,11 +189,25 @@ def phantom(host_address, repo_path, commit_list, index, repo_name, pid, repo_ur
 
     os.kill(pid, signal.SIGQUIT)
 
+def is_intstring(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        fetch('https://github.com/markprokoudine/mchacks')
+    if len(sys.argv) > 1:
+        if not is_intstring(arg[1]):
+            sys.exit("Usage: fetch.py <number_processes>")
+        num_processes = int(sys.arg[1])
+        print "Executing on " + str(num_processes) + "processes..."
     else:
-        fetch(sys.argv[1])
+        num_processes = 2
+        print "Executing on 2 processes (default)..."
+    print "Fetching GitHub repository (default) at " + repo_uri
+
+    fetch(repo_uri)
 
 
 
