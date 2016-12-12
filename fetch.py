@@ -198,9 +198,9 @@ def is_intstring(s):
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        if not is_intstring(arg[1]):
+        if not is_intstring(sys.argv[1]):
             sys.exit("Usage: fetch.py <number_processes>")
-        num_processes = int(sys.arg[1])
+        num_processes = int(sys.argv[1])
         print "Executing on " + str(num_processes) + "processes..."
     else:
         num_processes = 2
